@@ -23,4 +23,15 @@ echo "-----> Found components gemspecs"
 
 . "$build_dir"/.profile.d/ruby.sh
 
-all_gems sh -c "ln -s ../../.bundle && bundle check || bundle install"
+# all_gems sh -c "ln -s ../../.bundle && bundle check || bundle install"
+
+basedir="`pwd`"
+
+for gemfile in "${build_dir}"/components/*/*.gemspec; do
+  dir="$(dirname "$gemfile")"
+  cd "$dir"
+  pwd | indent
+  bundle install --without nothing --path ../../vendor/bundle --binstubs ../../vendor/bundle/bin | indent
+# all_gems sh -c "ln -s ../../.bundle && bundle check || bundle install"
+  cd "$basedir"
+done
