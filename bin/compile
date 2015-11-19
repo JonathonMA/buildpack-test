@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -e
+
+echo "ARGS" "$@"
+
+build_dir="$1"
+ache_dir="$2"
+env_dir="$3"
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+all_gems() {
+  for gemfile in "${build_dir}"/components/*/*.gemspec; do
+    dir="$(dirname "$gemfile")"
+    (cd "$dir" && pwd | indent && "$@")
+  done
+}
+
+echo "-----> Found components gemspecs"
+
+. "$build_dir"/.profile.d/ruby.sh
+
+all_gems sh -c "ln -s ../../.bundle && bundle check || bundle install"
